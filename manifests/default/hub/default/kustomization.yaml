@@ -9,7 +9,7 @@ patches:
         path: /spec/template/spec/containers/0/env/-
         value:
           name: READSB_NET_CONNECTOR
-          value: "planes-readsb,30004,beast_reduce_out;to-adsb-fi-readsb,30004,beast_reduce_out"
+          value: "planes-readsb,30004,beast_out;to-adsb-fi-readsb,30004,beast_out"
       - op: add
         path: /spec/template/spec/containers/0/env/-
         value:
