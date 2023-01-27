@@ -3,7 +3,7 @@ resources:
 namePrefix: hub-
 patches:
   - target:
-      kind: Deployment
+      kind: StatefulSet
     patch: |-
       - op: add
         path: /spec/template/spec/containers/0/env/-
