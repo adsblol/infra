@@ -2,8 +2,9 @@ resources:
   - ../base
   - resources.yaml
 namePrefix: planes-
+nameSuffix: -test
 commonLabels:
-  stage: prod
+  stage: test
 patches:
   - target:
       kind: StatefulSet
@@ -12,9 +13,7 @@ patches:
         path: /spec/template/spec/containers/0/env/-
         value:
           name: READSB_EXTRA_ARGS
-          value: "--debug=nS"
-    # TODO fix me!
-  # Add a 2nd rclone container
+          value: "--write-json-globe-index --write-globe-history /var/globe_history --debug=nS"
   - target:
       kind: StatefulSet
     patch: |-
@@ -68,7 +67,7 @@ patches:
         value:
           name: state
           persistentVolumeClaim:
-            claimName: planes-state
+            claimName: planes-state-test
       - op: add
         path: /spec/template/spec/volumes/-
         value:

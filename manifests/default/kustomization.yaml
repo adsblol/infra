@@ -3,6 +3,7 @@ resources:
   - hub/default
   - mlat/default
   - planes/default
+  - planes/test
   - to-adsb-fi/default
   - resources.yaml
 namespace: adsblol
