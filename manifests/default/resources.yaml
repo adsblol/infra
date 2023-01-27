@@ -9,7 +9,7 @@ kind: Service
 metadata:
   name: ingest
   annotations:
-    external-dns.alpha.kubernetes.io/hostname: in.adsb.lol
+    external-dns.alpha.kubernetes.io/hostname: in.adsb.lol,feed.adsb.lol
     load-balancer.hetzner.cloud/location: fsn1
     external-dns.alpha.kubernetes.io/cloudflare-proxied: "false"
 spec:

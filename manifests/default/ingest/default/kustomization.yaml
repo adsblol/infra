@@ -14,3 +14,8 @@ patches:
         value:
           name: READSB_NET_CONNECTOR
           value: "hub-readsb,30004,beast_reduce_out"
+      - op: add
+        path: /spec/template/spec/containers/0/env/-
+        value:
+         name: READSB_EXTRA_ARGS
+         value: "--debug=nS"

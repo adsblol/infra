@@ -15,3 +15,8 @@ patches:
         value:
          name: READSB_NET_SBS_INPUT_PORT
          value: "32006"
+      - op: add
+        path: /spec/template/spec/containers/0/env/-
+        value:
+         name: READSB_EXTRA_ARGS
+         value: "--debug=nS"
