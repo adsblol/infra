@@ -20,6 +20,10 @@ spec:
       port: 30004
       targetPort: adsb-in
       protocol: TCP
+    - name: adsb-in-2
+      port: 30005
+      targetPort: adsb-in
+      protocol: TCP
     - name: mlat-in
       port: 31090
       targetPort: mlat-in
