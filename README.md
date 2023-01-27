@@ -2,6 +2,7 @@
 
 This is the adsb.lol infrastructure.
 It aims to aggregate [ADS-B](https://github.com/wiedehopf/readsb) & [MLAT](https://github.com/wiedehopf/mlat-server)
+
 The repo should contain everything for you to be able to run a copy of this service.
 
 ## Why?
@@ -62,5 +63,7 @@ Global (to the namespace) resources such as publicly-intended services and ingre
 
 
 ## Where?
+
 user -> ingest -> hub -> planes
+
 ingest -> mlat -> hub -> planes
