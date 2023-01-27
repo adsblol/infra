@@ -24,7 +24,7 @@ spec:
               value: "Europe/Amsterdam"
             - name: LAT
               value: "52.38"
-            - name: LON
+            - name: LONG
               value: "4.897"
             - name: MLATPORT
               value: "30105"
