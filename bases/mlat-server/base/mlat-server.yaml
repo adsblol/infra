@@ -4,6 +4,8 @@ kind: Deployment
 metadata:
   name: mlat-server
 spec:
+  strategy:
+    type: Recreate
   template:
     spec:
       containers:
@@ -14,15 +16,14 @@ spec:
             - { name: NUMEXPR_NUM_THREADS, value: "1" }
             - { name: OMP_NUM_THREADS, value: "1" }
             - { name: PYTHONOPTIMIZE, value: "2" }
-          command: ["/bin/sh", "-c"]
-          args:
+          command:
             - python
             - /app/mlat-server
-            - --work-dir /run/mlat-server
-            - --client-listen 30105
-            - --write-csv /run/mlat-server/positions.csv
+            - --work-dir=/run/mlat-server
+            - --client-listen=31090
+            - --basestation-connect=hub-readsb:32007
           ports:
-            - containerPort: 30105
+            - containerPort: 31090
               name: mlat-in
           volumeMounts:
             - name: mlat-server
@@ -50,8 +51,8 @@ metadata:
 spec:
   ports:
     - name: mlat-in
-      port: 30105
-      targetPort: 30105
+      port: 31090
+      targetPort: mlat-in
       protocol: TCP
     - name: mlat-out
       port: 30104

@@ -1,6 +1,8 @@
 resources:
   - ../base
 namePrefix: ingest-
+commonLabels:
+  service: public
 # Patch:
 # add ENV
 patches:

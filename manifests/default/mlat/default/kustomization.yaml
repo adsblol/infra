@@ -1,3 +1,5 @@
 resources:
   - ../base
 namePrefix: mlat-
+commonLabels:
+  service: public

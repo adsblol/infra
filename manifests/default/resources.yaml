@@ -14,11 +14,15 @@ metadata:
     external-dns.alpha.kubernetes.io/cloudflare-proxied: "false"
 spec:
   selector:
-    app: ingest
+    service: public
   ports:
     - name: adsb-in
       port: 30004
-      targetPort: 30004
+      targetPort: adsb-in
+      protocol: TCP
+    - name: mlat-in
+      port: 31090
+      targetPort: mlat-in
       protocol: TCP
   type: LoadBalancer
 ---

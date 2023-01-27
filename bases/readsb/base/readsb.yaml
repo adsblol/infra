@@ -14,11 +14,15 @@ spec:
             - containerPort: 80
               name: http
             - containerPort: 30004
-              name: beast-in
+              name: adsb-in
             - containerPort: 30005
-              name: beast-out
+              name: adsb-out
             - containerPort: 30006
-              name: beast-out-r
+              name: adsb-out-r
+            - containerPort: 32006
+              name: sbs-in
+            - containerPort: 32007
+              name: sbs-out
           env:
             - name: TZ
               value: "Europe/Amsterdam"
