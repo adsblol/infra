@@ -1,3 +1,83 @@
 resources:
   - ../base
 namePrefix: planes-
+patches:
+  - target:
+      kind: StatefulSet
+    patch: |-
+      - op: add
+        path: /spec/template/spec/containers/0/env/-
+        value:
+          name: READSB_EXTRA_ARGS
+          value: "--write-json-globe-index --write-globe-history /var/globe_history"
+  # Add a 2nd rclone container
+  - target:
+      kind: StatefulSet
+    patch: |-
+      - op: add
+        path: /spec/template/spec/containers/1
+        value:
+          name: rclone
+          image: "rclone/rclone"
+          securityContext:
+            privileged: true
+            capabilities:
+              add:
+                - SYS_ADMIN
+          args:
+            - -v
+            - mount
+            - "adsblol:"
+            - /adsblol/adsblol
+            - --config=/etc/rclone/rclone.conf
+            - --allow-non-empty
+            - --allow-other
+            - --poll-interval=9s
+            - --dir-cache-time=9999h
+          lifecycle:
+            preStop:
+              exec:
+                command: ["/bin/sh", "-c", "fusermount -uz /adsblol"]
+          resources:
+            requests:
+              cpu: 250m
+              memory: 100Mi
+            limits:
+              cpu: 1
+              memory: 2048Mi
+          volumeMounts:
+            - name: config-data
+              mountPath: /etc/rclone
+            - name: adsblol
+              mountPath: /adsblol
+              mountPropagation: Bidirectional
+  # Add volumes
+  - target:
+      kind: StatefulSet
+    patch: |-
+      - op: add
+        path: /spec/template/spec/volumes/-
+        value:
+          name: adsblol
+          emptyDir: {}
+  - target:
+      kind: StatefulSet
+    patch: |-
+      - op: add
+        path: /spec/template/spec/volumes/-
+        value:
+          name: config-data
+          secret:
+            secretName: adsblol-rclone
+
+  # Mount /adsblol/adsblol to container 0
+  - target:
+      kind: StatefulSet
+    patch: |-
+      - op: add
+        path: /spec/template/spec/containers/0/volumeMounts/-
+        value:
+            name: adsblol
+            mountPath: /var/globe_history
+            subPath: adsblol
+            mountPropagation: HostToContainer

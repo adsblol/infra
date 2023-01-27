@@ -7,8 +7,10 @@ spec:
   serviceName: readsb
   template:
     spec:
+      volumes: []
       containers:
         - name: readsb
+          volumeMounts: []
           image: ghcr.io/sdr-enthusiasts/docker-tar1090:latest
           ports:
             - containerPort: 80
@@ -42,12 +44,12 @@ spec:
     - name: http
       port: 80
       targetPort: http
-    - name: beast-in
+    - name: adsb-in
       port: 30004
-      targetPort: 30004
-    - name: beast-out
+      targetPort: adsb-in
+    - name: adsb-out
       port: 30005
-      targetPort: 30005
-    - name: beast-out-r
+      targetPort: adsb-out
+    - name: adsb-out-r
       port: 30006
-      targetPort: 30006
+      targetPort: adsb-out-r
