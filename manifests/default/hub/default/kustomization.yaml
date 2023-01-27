@@ -9,4 +9,4 @@ patches:
         path: /spec/template/spec/containers/0/env/-
         value:
           name: READSB_NET_CONNECTOR
-          value: "planes-readsb,30004,beast_out"
+          value: "planes-readsb,30004,beast_reduce_out"
