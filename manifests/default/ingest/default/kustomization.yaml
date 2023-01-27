@@ -12,4 +12,4 @@ patches:
         path: /spec/template/spec/containers/0/env/-
         value:
           name: READSB_NET_CONNECTOR
-          value: "--net-connector hub-readsb,30004,beast_reduce_out"
+          value: "hub-readsb,30004,beast_out"
