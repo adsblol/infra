@@ -1,0 +1,15 @@
+resources:
+  - ../base
+namePrefix: ingest-
+# Patch:
+# add ENV
+patches:
+  - target:
+      kind: Deployment
+      name: readsb
+    patch: |-
+      - op: add
+        path: /spec/template/spec/containers/0/env/-
+        value:
+          name: READSB_NET_CONNECTOR
+          value: "--net-connector hub-readsb,30004,beast_reduce_out"

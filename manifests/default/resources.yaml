@@ -1,0 +1,74 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: adsblol
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ingest
+spec:
+  selector:
+    app: ingest
+  ports:
+    - name: adsb-in
+      port: 30004
+      targetPort: 30004
+      protocol: TCP
+  type: ClusterIP
+---
+# allow all network in this namespace
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-all
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    - {}
+  egress:
+    - {}
+---
+kind: Ingress
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: adsblol
+  annotations:
+    external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
+spec:
+  tls:
+    - hosts:
+        - adsb.lol
+      secretName: adsblol-tls
+  rules:
+    - host: adsb.lol
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: planes-readsb
+                port:
+                  name: http
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: adsblol-tls
+spec:
+  secretName: adsblol-tls
+  issuerRef:
+    name: letsencrypt-cloudflare
+    kind: ClusterIssuer
+  dnsNames:
+    - adsb.lol
+    - "*.adsb.lol"
+  usages:
+    - digital signature
+    - key encipherment
+    - server auth

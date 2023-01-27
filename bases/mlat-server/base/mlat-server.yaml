@@ -1,0 +1,59 @@
+# A deployment running ghcr.io/katlol/mlat-server
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mlat-server
+spec:
+  template:
+    spec:
+      containers:
+        - name: mlat-server
+          image: ghcr.io/katlol/mlat-server
+          env:
+            - { name: MKL_NUM_THREADS, value: "1" }
+            - { name: NUMEXPR_NUM_THREADS, value: "1" }
+            - { name: OMP_NUM_THREADS, value: "1" }
+            - { name: PYTHONOPTIMIZE, value: "2" }
+          command: ["/bin/sh", "-c"]
+          args:
+            - python
+            - /app/mlat-server
+            - --work-dir /run/mlat-server
+            - --client-listen 30105
+            - --write-csv /run/mlat-server/positions.csv
+          ports:
+            - containerPort: 30105
+              name: mlat-in
+          volumeMounts:
+            - name: mlat-server
+              mountPath: /run/mlat-server
+      volumes:
+        - name: mlat-server
+          persistentVolumeClaim:
+            claimName: mlat-server
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mlat-server
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mlat-server
+spec:
+  ports:
+    - name: mlat-in
+      port: 30105
+      targetPort: 30105
+      protocol: TCP
+    - name: mlat-out
+      port: 30104
+      targetPort: 30104
+      protocol: TCP

@@ -1,0 +1,4 @@
+resources:
+  - mlat-server.yaml
+commonLabels:
+  app: mlat-server

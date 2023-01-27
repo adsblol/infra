@@ -1,0 +1,49 @@
+# StatefulSet for ghcr.io/sdr-enthusiasts/docker-tar1090
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: readsb
+spec:
+  serviceName: readsb
+  template:
+    spec:
+      containers:
+        - name: readsb
+          image: ghcr.io/sdr-enthusiasts/docker-tar1090:latest
+          ports:
+            - containerPort: 80
+              name: http
+            - containerPort: 30004
+              name: beast-in
+            - containerPort: 30005
+              name: beast-out
+            - containerPort: 30006
+              name: beast-out-r
+          env:
+            - name: TZ
+              value: "Europe/Amsterdam"
+            - name: LAT
+              value: "52.38"
+            - name: LON
+              value: "4.897"
+            - name: MLATPORT
+              value: "30105"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: readsb
+spec:
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+    - name: beast-in
+      port: 30004
+      targetPort: 30004
+    - name: beast-out
+      port: 30005
+      targetPort: 30005
+    - name: beast-out-r
+      port: 30006
+      targetPort: 30006

@@ -1,0 +1,7 @@
+resources:
+  - ingest/default
+  - hub/default
+  - mlat/default
+  - planes/default
+  - resources.yaml
+namespace: adsblol

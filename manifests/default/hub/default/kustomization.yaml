@@ -1,0 +1,13 @@
+resources:
+  - ../base
+namePrefix: hub-
+patches:
+  - target:
+      kind: Deployment
+      name: readsb
+    patch: |-
+      - op: add
+        path: /spec/template/spec/containers/0/env/-
+        value:
+          name: READSB_NET_CONNECTOR
+          value: "--net-connector planes-readsb,30004,beast_reduce_out"
