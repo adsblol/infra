@@ -36,6 +36,18 @@ spec:
               value: "30105"
             - name: READSB_MAX_RANGE
               value: "99999"
+            - name: "TAR1090_SITESHOW"
+              value: "false"
+            - name: TAR1090_RANGE_OUTLINE_WIDTH
+              value: "0.0"
+            - name: TAR1090_ACTUAL_RANGE_OUTLINE_WIDTH
+              value: "0.0"
+            - name: READSB_RANGE_OUTLINE_HOURS
+              value: "0.0"
+            - name: TAR1090_RANGE_OUTLINE_DASH
+              value: "[0,0]"
+            - name: TAR1090_DEFAULTZOOMLVL
+              value: "3"
 ---
 apiVersion: v1
 kind: Service

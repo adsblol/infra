@@ -1,6 +1,6 @@
 resources:
   - ../base
-namePrefix: hub-
+namePrefix: to-adsb-fi-
 patches:
   - target:
       kind: StatefulSet
@@ -9,12 +9,7 @@ patches:
         path: /spec/template/spec/containers/0/env/-
         value:
           name: READSB_NET_CONNECTOR
-          value: "planes-readsb,30004,beast_reduce_out;to-adsb-fi-readsb,30004,beast_reduce_out"
-      - op: add
-        path: /spec/template/spec/containers/0/env/-
-        value:
-         name: READSB_NET_SBS_INPUT_PORT
-         value: "32006"
+          value: "feed.adsb.fi,30004,beast_reduce_out"
       - op: add
         path: /spec/template/spec/containers/0/env/-
         value:

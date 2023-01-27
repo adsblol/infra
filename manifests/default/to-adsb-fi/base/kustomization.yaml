@@ -1,0 +1,4 @@
+resources:
+  - ../../../../bases/readsb/default
+commonLabels:
+  app: to-adsb-fi
