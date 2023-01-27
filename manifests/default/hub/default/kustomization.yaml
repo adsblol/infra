@@ -4,7 +4,6 @@ namePrefix: hub-
 patches:
   - target:
       kind: Deployment
-      name: readsb
     patch: |-
       - op: add
         path: /spec/template/spec/containers/0/env/-
