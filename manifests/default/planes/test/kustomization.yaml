@@ -78,7 +78,7 @@ patches:
         path: /spec/template/spec/containers/0/volumeMounts/-
         value:
           name: adsblol
-          mountPath: /var/globe_history/
+          mountPath: /var/globe_history/2023
           subPath: adsblol
           mountPropagation: HostToContainer
       - op: add

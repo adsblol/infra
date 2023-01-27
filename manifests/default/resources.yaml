@@ -13,7 +13,6 @@ metadata:
     load-balancer.hetzner.cloud/location: fsn1
     external-dns.alpha.kubernetes.io/cloudflare-proxied: "false"
 spec:
-  internalTrafficPolicy: Local
   selector:
     service: public
   ports:
