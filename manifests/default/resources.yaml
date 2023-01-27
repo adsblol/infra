@@ -17,6 +17,14 @@ spec:
   selector:
     service: public
   ports:
+    - name: adsb-leet
+      port: 1337
+      targetPort: adsb-in
+      protocol: TCP
+    - name: mlat-leet
+      port: 1338
+      targetPort: adsb-in
+      protocol: TCP
     - name: adsb-in
       port: 30004
       targetPort: adsb-in
@@ -59,6 +67,16 @@ spec:
       secretName: adsblol-tls
   rules:
     - host: adsb.lol
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: planes-readsb
+                port:
+                  name: http
+    - host: globe.adsb.lol
       http:
         paths:
           - path: /
