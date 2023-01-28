@@ -1,0 +1,4 @@
+resources:
+  - haproxy.yaml
+commonLabels:
+  app: haproxy

@@ -1,0 +1,39 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+spec:
+  template:
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:alpine
+          volumeMounts:
+            - name: html
+              mountPath: /usr/share/nginx/html/
+          resources:
+            requests:
+              cpu: 1m
+              memory: 64Mi
+            limits:
+              cpu: 100m
+              memory: 128Mi
+          livenessProbe:
+            tcpSocket:
+              port: 80
+          readinessProbe:
+            tcpSocket:
+              port: 80
+      volumes:
+        - name: html
+          configMap:
+            name: html
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: nginx
+spec:
+  ports:
+    - port: 80

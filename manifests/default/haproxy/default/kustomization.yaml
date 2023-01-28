@@ -1,0 +1,10 @@
+resources:
+  - ../base
+  - resources.yaml
+commonLabels:
+  stage: prod
+configMapGenerator:
+  - name: haproxy-config
+    files:
+      - haproxy.cfg
+  - name: haproxy-lua

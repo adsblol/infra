@@ -1,0 +1,9 @@
+resources:
+  - ../base
+commonLabels:
+  name: home
+
+configMapGenerator:
+  - name: html
+    files:
+      - index.html

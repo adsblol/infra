@@ -1,0 +1,81 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: haproxy
+spec:
+  template:
+    spec:
+      containers:
+        - image: haproxy:2.7
+          imagePullPolicy: Always
+          name: haproxy
+          resources:
+            limits:
+              cpu: "1"
+              memory: 256Mi
+            requests:
+              cpu: 100m
+              memory: 128Mi
+          startupProbe:
+            httpGet:
+              path: /metrics
+              port: 9090
+          livenessProbe:
+            httpGet:
+              path: /metrics
+              port: 9090
+          readinessProbe:
+            httpGet:
+              path: /metrics
+              port: 9090
+          ports:
+            - containerPort: 1337
+              name: beast-1337
+              protocol: TCP
+            - containerPort: 1338
+              name: mlat-1338
+              protocol: TCP
+            - containerPort: 30004
+              name: beast-30004
+              protocol: TCP
+            - containerPort: 30005
+              name: beast-30005
+              protocol: TCP
+            - containerPort: 31090
+              name: mlat-31090
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /usr/local/etc/haproxy/haproxy.cfg
+              name: haproxy-config
+              subPath: haproxy.cfg
+            - mountPath: /usr/local/etc/haproxy/lua/
+              name: haproxy-lua
+      volumes:
+        - configMap:
+            defaultMode: 420
+            items:
+              - key: haproxy.cfg
+                path: haproxy.cfg
+            name: haproxy-config
+          name: haproxy-config
+        - configMap:
+            defaultMode: 420
+            name: haproxy-lua
+          name: haproxy-lua
+  updateStrategy:
+    rollingUpdate:
+      maxSurge: 3
+      maxUnavailable: 0
+    type: RollingUpdate
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: haproxy
+spec:
+  type: ClusterIP
+  ports:
+    - name: metrics
+      port: 9090
+      protocol: TCP
+      targetPort: 9090

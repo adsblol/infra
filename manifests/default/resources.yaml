@@ -9,32 +9,35 @@ kind: Service
 metadata:
   name: ingest
   annotations:
-    external-dns.alpha.kubernetes.io/hostname: in.adsb.lol,feed.adsb.lol
+    external-dns.alpha.kubernetes.io/hostname: in.adsb.lol,feed.adsb.lol,in.planes.lol,feed.planes.lol
     load-balancer.hetzner.cloud/location: fsn1
+    load-balancer.hetzner.cloud/uses-proxyprotocol: "true"
     external-dns.alpha.kubernetes.io/cloudflare-proxied: "false"
 spec:
+  internalTrafficPolicy: Local
+  externalTrafficPolicy: Local
   selector:
-    service: public
+    app: haproxy
   ports:
-    - name: adsb-leet
+    - name: beast-1337
       port: 1337
-      targetPort: adsb-in
+      targetPort: beast-1337
       protocol: TCP
-    - name: mlat-leet
+    - name: mlat-1338
       port: 1338
-      targetPort: adsb-in
+      targetPort: mlat-1338
       protocol: TCP
-    - name: adsb-in
+    - name: beast-30004
       port: 30004
-      targetPort: adsb-in
+      targetPort: beast-30004
       protocol: TCP
-    - name: adsb-in-2
-      port: 30005
-      targetPort: adsb-in
+    - name: beast-30005
+      port: 30004
+      targetPort: beast-30005
       protocol: TCP
-    - name: mlat-in
+    - name: mlat-31090
       port: 31090
-      targetPort: mlat-in
+      targetPort: mlat-31090
       protocol: TCP
   type: LoadBalancer
 ---
@@ -65,7 +68,27 @@ spec:
         - adsb.lol
       secretName: adsblol-tls
   rules:
+    - host: planes.lol
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: nginx
+                port:
+                  number: 80
     - host: adsb.lol
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: nginx
+                port:
+                  number: 80
+    - host: globe.planes.lol
       http:
         paths:
           - path: /
@@ -108,6 +131,8 @@ spec:
   dnsNames:
     - adsb.lol
     - "*.adsb.lol"
+    - "planes.lol"
+    - "*.planes.lol"
   usages:
     - digital signature
     - key encipherment
