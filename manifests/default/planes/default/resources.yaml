@@ -9,3 +9,48 @@ spec:
   resources:
     requests:
       storage: 10Gi
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: tar1090-config
+data:
+  config.js: |
+    PageName = "ADSB.lol - Open Source ADSB/MLAT aggregator.";
+    BingMapsAPIKey = "AqCdYNFHcAZuy4k9zT_UXZMdfSo5zN-mImkwN6PzcXNYyo0bYHaHik2F8qg-h1c1";
+    shareBaseUrl = "https://globe.adsb.lol";
+  04-tar1090-configure: |
+    #!/usr/bin/with-contenv bash
+    # shellcheck shell=bash
+
+    # Modify nginx.conf
+    srcdir=/run/readsb
+    service=readsb
+    html_path=${TAR1090_INSTALL_DIR}/html
+    sed -i.original \
+      -e "s?SOURCE_DIR?$srcdir?g" \
+      -e "s?SERVICE?$service?g" \
+      -e "s?/INSTANCE/?/?g" \
+      -e "s?/INSTANCE?/?g" \
+      -e "s?HTMLPATH?$html_path?g" \
+      "${TAR1090_INSTALL_DIR}/nginx.conf"
+    sed -i '/location \/data\/ {/a \ \ access_log off;' \
+        "${TAR1090_INSTALL_DIR}/nginx.conf"
+
+    # Modify tar1090 settings
+    sed -i.original \
+      -e 's/skyview978/skyaware978/' \
+      "${TAR1090_INSTALL_DIR}/default"
+
+    # Add in CORS header for tar1090 data/aircraft.json file
+
+    sed -i 's/location ~ aircraft\\.json$ {/location ~ aircraft\.json$ {\n    add_header Access-Control-Allow-Origin "\*";/g' \
+    "${TAR1090_INSTALL_DIR}/nginx.conf"
+
+
+    # Add in CORS header for tar1090 data/aircraft.json file
+
+    sed -i 's/location ~ aircraft\\.json$ {/location ~ aircraft\.json$ {\n    add_header Access-Control-Allow-Origin "\*";/g' \
+    "${TAR1090_INSTALL_DIR}/nginx.conf"
+
+    cp /tar1090-config/config.js "${TAR1090_INSTALL_DIR}/html/config.js"

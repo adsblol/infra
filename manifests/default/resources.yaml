@@ -62,6 +62,14 @@ metadata:
   name: adsblol
   annotations:
     external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      # Block /data/outline.json
+      location = /data/outline.json {
+        return 403;
+      }
+      location = /discord {
+        return 302 https://discord.gg/3wPfmyNFRq;
+      }
 spec:
   tls:
     - hosts:
@@ -75,7 +83,7 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: nginx
+                name: api
                 port:
                   number: 80
     - host: adsb.lol
@@ -85,7 +93,7 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: nginx
+                name: api
                 port:
                   number: 80
     - host: globe.planes.lol
@@ -118,6 +126,26 @@ spec:
                 name: planes-readsb-test
                 port:
                   name: http
+    - host: globe.freebnc.net
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: planes-readsb
+                port:
+                  number: 80
+    - host: adsblol.freebnc.net
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: api
+                port:
+                  number: 80
 ---
 apiVersion: cert-manager.io/v1
 kind: Certificate
@@ -133,7 +161,22 @@ spec:
     - "*.adsb.lol"
     - "planes.lol"
     - "*.planes.lol"
+    - "*.freebnc.net"
   usages:
     - digital signature
     - key encipherment
     - server auth
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: serve-run-http-config
+data:
+  default.conf: |
+    server {
+      listen 150;
+      server_name _;
+      location / {
+        root /usr/share/nginx/html;
+      }
+    }

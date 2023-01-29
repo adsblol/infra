@@ -1,0 +1,29 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api
+spec:
+  template:
+    spec:
+      containers:
+        - name: api
+          image: ghcr.io/adsblol/api:main
+          imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 1
+              memory: 256Mi
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: api
+spec:
+  ports:
+    - port: 80
+      name: http
+

@@ -7,7 +7,7 @@ commonLabels:
 # add ENV
 patches:
   - target:
-      kind: StatefulSet
+      kind: Deployment
     patch: |-
       - op: add
         path: /spec/template/spec/containers/0/env/-
@@ -18,4 +18,4 @@ patches:
         path: /spec/template/spec/containers/0/env/-
         value:
          name: READSB_EXTRA_ARGS
-         value: "--debug=nS"
+         value: "--debug=nS --net-ingest --tar1090-api"

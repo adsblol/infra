@@ -1,0 +1,4 @@
+resources:
+  - api.yaml
+commonLabels:
+  app: api

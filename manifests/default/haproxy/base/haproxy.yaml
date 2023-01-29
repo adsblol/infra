@@ -1,8 +1,9 @@
 apiVersion: apps/v1
-kind: DaemonSet
+kind: Deployment
 metadata:
   name: haproxy
 spec:
+  replicas: 3
   template:
     spec:
       containers:
@@ -62,7 +63,7 @@ spec:
             defaultMode: 420
             name: haproxy-lua
           name: haproxy-lua
-  updateStrategy:
+  strategy:
     rollingUpdate:
       maxSurge: 3
       maxUnavailable: 0

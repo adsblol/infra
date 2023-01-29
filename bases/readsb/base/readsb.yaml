@@ -1,16 +1,21 @@
-# StatefulSet for ghcr.io/sdr-enthusiasts/docker-tar1090
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
   name: readsb
 spec:
-  serviceName: readsb
   template:
     spec:
-      volumes: []
+      volumes:
+      - name: run
+        emptyDir: {}
+      - name: serve-run-http-config
+        configMap:
+          name: serve-run-http-config
       containers:
         - name: readsb
-          volumeMounts: []
+          volumeMounts:
+            - name: run
+              mountPath: /run/readsb
           image: ghcr.io/sdr-enthusiasts/docker-tar1090:latest
           resources:
             limits:
@@ -66,7 +71,18 @@ spec:
             - name: TAR1090_RANGE_OUTLINE_DASH
               value: "[0,0]"
             - name: TAR1090_DEFAULTZOOMLVL
-              value: "5"
+              value: "10"
+        - name: serve-run-http
+          image: nginx:alpine
+          volumeMounts:
+            - name: run
+              mountPath: /usr/share/nginx/html
+            - name: serve-run-http-config
+              mountPath: /etc/nginx/conf.d/default.conf
+              subPath: default.conf
+          ports:
+            - containerPort: 150
+              name: json-stats
 ---
 apiVersion: v1
 kind: Service
@@ -86,3 +102,6 @@ spec:
     - name: adsb-out-r
       port: 30006
       targetPort: adsb-out-r
+    - name: json-stats
+      port: 150
+      targetPort: json-stats

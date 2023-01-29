@@ -6,17 +6,67 @@ commonLabels:
   stage: prod
 patches:
   - target:
-      kind: StatefulSet
+      kind: Deployment
     patch: |-
+      - op: replace
+        path: /spec/strategy
+        value:
+          type: Recreate
       - op: add
         path: /spec/template/spec/containers/0/env/-
         value:
           name: READSB_EXTRA_ARGS
-          value: "--debug=nS"
-    # TODO fix me!
-  # Add a 2nd rclone container
+          value: "--debug=nS --net-ingest --write-json-globe-index"
+      - op: add
+        path: /spec/template/spec/volumes/-
+        value:
+          name: tar1090-config
+          configMap:
+            name: tar1090-config
+            defaultMode: 0755
+      - op: add
+        path: /spec/template/spec/volumes/-
+        value:
+          name: adsblol
+          emptyDir: {}
+      - op: add
+        path: /spec/template/spec/volumes/-
+        value:
+          name: state
+          persistentVolumeClaim:
+            claimName: planes-state
+      - op: add
+        path: /spec/template/spec/volumes/-
+        value:
+          name: config-data
+          secret:
+            secretName: adsblol-rclone
+      - op: add
+        path: /spec/template/spec/containers/0/volumeMounts/-
+        value:
+          name: adsblol
+          mountPath: /var/globe_history/2023
+          subPath: adsblol
+          mountPropagation: HostToContainer
+      - op: add
+        path: /spec/template/spec/containers/0/volumeMounts/-
+        value:
+          name: state
+          mountPath: /var/globe_history/internal_state
+      - op: add
+        path: /spec/template/spec/containers/0/volumeMounts/-
+        value:
+          name: tar1090-config
+          mountPath: /tar1090-config/config.js
+          subPath: config.js
+      - op: add
+        path: /spec/template/spec/containers/0/volumeMounts/-
+        value:
+          name: tar1090-config
+          mountPath: /etc/cont-init.d/04-tar1090-configure
+          subPath: 04-tar1090-configure
   - target:
-      kind: StatefulSet
+      kind: Deployment
     patch: |-
       - op: add
         path: /spec/template/spec/containers/1
@@ -55,35 +105,3 @@ patches:
             - name: adsblol
               mountPath: /adsblol
               mountPropagation: Bidirectional
-  - target:
-      kind: StatefulSet
-    patch: |-
-      - op: add
-        path: /spec/template/spec/volumes/-
-        value:
-          name: adsblol
-          emptyDir: {}
-      - op: add
-        path: /spec/template/spec/volumes/-
-        value:
-          name: state
-          persistentVolumeClaim:
-            claimName: planes-state
-      - op: add
-        path: /spec/template/spec/volumes/-
-        value:
-          name: config-data
-          secret:
-            secretName: adsblol-rclone
-      - op: add
-        path: /spec/template/spec/containers/0/volumeMounts/-
-        value:
-          name: adsblol
-          mountPath: /var/globe_history/2023
-          subPath: adsblol
-          mountPropagation: HostToContainer
-      - op: add
-        path: /spec/template/spec/containers/0/volumeMounts/-
-        value:
-          name: state
-          mountPath: /var/globe_history/internal_state

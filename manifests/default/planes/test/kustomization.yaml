@@ -7,7 +7,7 @@ commonLabels:
   stage: test
 patches:
   - target:
-      kind: StatefulSet
+      kind: Deployment
     patch: |-
       - op: add
         path: /spec/template/spec/containers/0/env/-
@@ -15,7 +15,7 @@ patches:
           name: READSB_EXTRA_ARGS
           value: "--write-json-globe-index --write-globe-history /var/globe_history --debug=nS"
   - target:
-      kind: StatefulSet
+      kind: Deployment
     patch: |-
       - op: add
         path: /spec/template/spec/containers/1
@@ -55,7 +55,7 @@ patches:
               mountPath: /adsblol
               mountPropagation: Bidirectional
   - target:
-      kind: StatefulSet
+      kind: Deployment
     patch: |-
       - op: add
         path: /spec/template/spec/volumes/-

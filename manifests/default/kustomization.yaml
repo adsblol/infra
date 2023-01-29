@@ -5,7 +5,7 @@ resources:
   - planes/default
   - planes/test
   - to-adsb-fi/default
-  - nginx/default
+  - api/default
   - haproxy/default
   - resources.yaml
 namespace: adsblol
