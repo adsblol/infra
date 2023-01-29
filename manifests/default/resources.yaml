@@ -32,7 +32,7 @@ spec:
       targetPort: beast-30004
       protocol: TCP
     - name: beast-30005
-      port: 30004
+      port: 30005
       targetPort: beast-30005
       protocol: TCP
     - name: mlat-31090
@@ -56,6 +56,44 @@ spec:
   egress:
     - {}
 ---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: homepage
+  annotations:
+    external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
+    # /discord -> https://discord.gg/3wPfmyNFRq
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      location /discord {
+        return 302 https://discord.gg/3wPfmyNFRq;
+      }
+spec:
+  tls:
+    - hosts:
+        - adsb.lol
+      secretName: adsblol-tls
+  rules:
+  - host: adsb.lol
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: api
+            port:
+              number: 80
+  - host: planes.lol
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: api
+            port:
+              number: 80
+---
 kind: Ingress
 apiVersion: networking.k8s.io/v1
 metadata:
@@ -68,26 +106,6 @@ spec:
         - adsb.lol
       secretName: adsblol-tls
   rules:
-    - host: planes.lol
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: api
-                port:
-                  number: 80
-    - host: adsb.lol
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: api
-                port:
-                  number: 80
     - host: globe.planes.lol
       http:
         paths:
@@ -138,26 +156,6 @@ spec:
                 name: planes-readsb-test
                 port:
                   name: http
-    - host: globe.freebnc.net
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: planes-readsb
-                port:
-                  number: 80
-    - host: adsblol.freebnc.net
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: api
-                port:
-                  number: 80
 ---
 apiVersion: cert-manager.io/v1
 kind: Certificate

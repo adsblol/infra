@@ -16,7 +16,7 @@ patches:
         path: /spec/template/spec/containers/0/env/-
         value:
           name: READSB_EXTRA_ARGS
-          value: "--debug=nS --net-ingest"
+          value: "--debug=nS --net-ingest --tar1090-use-api"
       - op: add
         path: /spec/template/spec/volumes/-
         value:
