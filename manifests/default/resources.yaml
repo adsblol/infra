@@ -29,7 +29,7 @@ spec:
       protocol: TCP
     - name: beast-30004
       port: 30004
-      targetPort: beast-30004
+      targetPort: beast-1337
       protocol: TCP
     - name: beast-30005
       port: 30005
