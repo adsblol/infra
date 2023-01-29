@@ -62,14 +62,6 @@ metadata:
   name: adsblol
   annotations:
     external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
-    nginx.ingress.kubernetes.io/configuration-snippet: |
-      # Block /data/outline.json
-      location = /data/outline.json {
-        return 403;
-      }
-      location = /discord {
-        return 302 https://discord.gg/3wPfmyNFRq;
-      }
 spec:
   tls:
     - hosts:
@@ -116,6 +108,26 @@ spec:
                 name: planes-readsb
                 port:
                   name: http
+    - host: globe.adsb.lol
+      http:
+        paths:
+          - path: /re-api
+            pathType: Prefix
+            backend:
+              service:
+                name: planes-readsb
+                port:
+                  name: http-api
+    - host: globe.planes.lol
+      http:
+        paths:
+          - path: /re-api
+            pathType: Prefix
+            backend:
+              service:
+                name: planes-readsb
+                port:
+                  name: http-api
     - host: test.adsb.lol
       http:
         paths:

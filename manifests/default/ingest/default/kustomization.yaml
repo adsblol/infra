@@ -18,4 +18,4 @@ patches:
         path: /spec/template/spec/containers/0/env/-
         value:
          name: READSB_EXTRA_ARGS
-         value: "--debug=nS --net-ingest --tar1090-api"
+         value: "--debug=nS --net-ingest"

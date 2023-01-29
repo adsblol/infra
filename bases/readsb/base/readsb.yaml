@@ -49,29 +49,15 @@ spec:
               name: sbs-in
             - containerPort: 32007
               name: sbs-out
+            - containerPort: 30152
+              name: http-api
           env:
             - name: TZ
               value: "Europe/Amsterdam"
-            - name: LAT
-              value: "52.38"
-            - name: LONG
-              value: "4.897"
             - name: MLATPORT
               value: "30105"
             - name: READSB_MAX_RANGE
               value: "99999"
-            - name: "TAR1090_SITESHOW"
-              value: "false"
-            - name: TAR1090_RANGE_OUTLINE_WIDTH
-              value: "0.0"
-            - name: TAR1090_ACTUAL_RANGE_OUTLINE_WIDTH
-              value: "0.0"
-            - name: READSB_RANGE_OUTLINE_HOURS
-              value: "0.0"
-            - name: TAR1090_RANGE_OUTLINE_DASH
-              value: "[0,0]"
-            - name: TAR1090_DEFAULTZOOMLVL
-              value: "10"
         - name: serve-run-http
           image: nginx:alpine
           volumeMounts:
@@ -93,6 +79,9 @@ spec:
     - name: http
       port: 80
       targetPort: http
+    - name: http-api
+      port: 30152
+      targetPort: http-api
     - name: adsb-in
       port: 30004
       targetPort: adsb-in
