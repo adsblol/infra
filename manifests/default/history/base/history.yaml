@@ -1,0 +1,113 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: history
+spec:
+  template:
+    spec:
+      volumes:
+      - name: nginx-conf
+        configMap:
+          name: history-nginx-conf
+      - name: rclone-config
+        secret:
+          secretName: adsblol-rclone
+      - name: rclone-emptydir
+        emptyDir: {}
+      - name: adsblol-history
+        emptyDir: {}
+      - name: remote-mount
+        emptyDir: {}
+      initContainers:
+      - name: rclone-config
+        image: busybox
+        command: ["sh", "-ce", "cp /rclone-ro/rclone.conf /config/rclone.conf"]
+        volumeMounts:
+        - name: rclone-config
+          mountPath: /rclone-ro/rclone.conf
+          subPath: rclone.conf
+        - name: rclone-emptydir
+          mountPath: /config
+      containers:
+      - name: history
+        image: ghcr.io/adsblol/history:main
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+          name: http-api
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 1
+            memory: 256Mi
+        volumeMounts:
+        - name: adsblol-history
+          mountPath: /out
+      - name: nginx
+        image: nginx:alpine
+        volumeMounts:
+        - name: nginx-conf
+          mountPath: /etc/nginx/conf.d/default.conf
+          subPath: default.conf
+        - name: remote-mount
+          mountPath: /adsblol
+          subPath: adsblol
+          mountPropagation: HostToContainer
+        ports:
+        - containerPort: 80
+          name: http-nginx
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 1
+            memory: 256Mi
+      - name: rclone-sync
+        image: rclone/rclone
+        command: ["/bin/sh", "-c", "while true; do rclone -v move /in adsblol:history; sleep 10; done"]
+        volumeMounts:
+        - name: rclone-emptydir
+          mountPath: /config/rclone/
+        - name: adsblol-history
+          mountPath: /in
+      - name: rclone-mount
+        image: rclone/rclone
+        securityContext:
+          privileged: true
+          capabilities:
+            add:
+            - SYS_ADMIN
+        args:
+        - -v
+        - mount
+        - "adsblol:history"
+        - /adsblol/adsblol
+        - --config=/config/rclone.conf
+        - --allow-non-empty
+        - --allow-other
+        - --poll-interval=9s
+        - --dir-cache-time=9999h
+        lifecycle:
+          preStop:
+            exec:
+              command: ["/bin/sh", "-c", "fusermount -uz /adsblol"]
+        volumeMounts:
+        - name: rclone-emptydir
+          mountPath: /config
+        - name: remote-mount
+          mountPath: /adsblol
+          mountPropagation: Bidirectional
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: history
+spec:
+  ports:
+  - port: 8080
+    name: http-api
+  - port: 80
+    name: http-nginx

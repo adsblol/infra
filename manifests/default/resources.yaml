@@ -190,3 +190,26 @@ data:
         root /usr/share/nginx/html;
       }
     }
+---
+kind: Ingress
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: history
+  annotations:
+    external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
+spec:
+  tls:
+    - hosts:
+        - adsb.lol
+      secretName: adsblol-tls
+  rules:
+    - host: history.adsb.lol
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: history
+                port:
+                  name: http-nginx

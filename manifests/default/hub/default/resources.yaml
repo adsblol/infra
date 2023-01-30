@@ -1,0 +1,12 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMServiceScrape
+metadata:
+  name: hub
+  labels:
+    app: hub
+spec:
+  selector:
+    matchLabels:
+      app: hub
+  endpoints:
+  - port: json-stats

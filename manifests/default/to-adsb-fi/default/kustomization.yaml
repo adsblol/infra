@@ -3,7 +3,7 @@ resources:
 namePrefix: to-adsb-fi-
 patches:
   - target:
-      kind: StatefulSet
+      kind: Deployment
     patch: |-
       - op: add
         path: /spec/template/spec/containers/0/env/-

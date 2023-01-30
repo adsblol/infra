@@ -20,7 +20,7 @@ spec:
           resources:
             limits:
               cpu: "1"
-              memory: 256Mi
+              memory: 512Mi
             requests:
               cpu: 100m
               memory: 128Mi
@@ -94,3 +94,6 @@ spec:
     - name: json-stats
       port: 150
       targetPort: json-stats
+    - name: mlat-in
+      port: 32007
+      targetPort: 32007

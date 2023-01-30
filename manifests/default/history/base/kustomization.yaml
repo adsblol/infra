@@ -1,0 +1,8 @@
+resources:
+  - history.yaml
+commonLabels:
+  app: history
+configMapGenerator:
+  - name: history-nginx-conf
+    files:
+      - default.conf
