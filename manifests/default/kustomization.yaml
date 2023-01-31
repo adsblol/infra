@@ -9,4 +9,5 @@ resources:
 - haproxy/default
 - history/default
 - resources.yaml
+- flux.yaml
 namespace: adsblol
