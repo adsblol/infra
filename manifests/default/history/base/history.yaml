@@ -35,6 +35,14 @@ spec:
         ports:
         - containerPort: 8080
           name: http-api
+        livenessProbe:
+          tcpSocket:
+            port: 8080
+          initialDelaySeconds: 15
+        readinessProbe:
+          tcpSocket:
+            port: 8080
+          initialDelaySeconds: 15
         resources:
           requests:
             cpu: 100m
@@ -67,7 +75,7 @@ spec:
             memory: 256Mi
       - name: rclone-sync
         image: rclone/rclone
-        command: ["/bin/sh", "-c", "while true; do rclone -v move /in adsblol:history; sleep 10; done"]
+        command: ["/bin/sh", "-c", "while true; do rclone -v move  /in adsblol:history; sleep 10; done"]
         volumeMounts:
         - name: rclone-emptydir
           mountPath: /config/rclone/

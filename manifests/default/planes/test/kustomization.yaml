@@ -1,88 +1,45 @@
 resources:
-  - ../base
-  - resources.yaml
+- ../base
+- resources.yaml
 namePrefix: planes-
 nameSuffix: -test
 commonLabels:
   stage: test
 patches:
-  - target:
-      kind: Deployment
-    patch: |-
-      - op: add
-        path: /spec/template/spec/containers/0/env/-
-        value:
-          name: READSB_EXTRA_ARGS
-          value: "--write-json-globe-index --write-globe-history /var/globe_history --debug=nS"
-  - target:
-      kind: Deployment
-    patch: |-
-      - op: add
-        path: /spec/template/spec/containers/1
-        value:
-          name: rclone
-          image: "rclone/rclone"
-          securityContext:
-            privileged: true
-            capabilities:
-              add:
-                - SYS_ADMIN
-          args:
-            - -v
-            - mount
-            - "adsblol:adsblol"
-            - /adsblol/adsblol
-            - --config=/etc/rclone/rclone.conf
-            - --allow-non-empty
-            - --allow-other
-            - --poll-interval=9s
-            - --dir-cache-time=9999h
-          lifecycle:
-            preStop:
-              exec:
-                command: ["/bin/sh", "-c", "fusermount -uz /adsblol"]
+- target:
+    kind: Deployment
+  patch: |-
+    # Make it a statefulset
+    - op: replace
+      path: /kind
+      value: StatefulSet
+    - op: add
+      path: /spec/serviceName
+      value: planes-test
+- target:
+    kind: StatefulSet
+  patch: |-
+    - op: add
+      path: /spec/template/spec/containers/0/env/-
+      value:
+        name: READSB_EXTRA_ARGS
+        value: "--net-receiver-id --tar1090-use-api --write-json-globe-index --heatmap 30 --write-globe-history /var/globe_history"
+    - op: add
+      path: /spec/template/spec/containers/0/volumeMounts/-
+      value:
+        name: planes-test
+        mountPath: /var/globe_history/
+    - op: add
+      path: /spec/volumeClaimTemplates
+      value: []
+    - op: add
+      path: /spec/volumeClaimTemplates/-
+      value:
+        metadata:
+          name: planes-test
+        spec:
+          accessModes:
+          - ReadWriteOnce
           resources:
             requests:
-              cpu: 250m
-              memory: 100Mi
-            limits:
-              cpu: 1
-              memory: 2048Mi
-          volumeMounts:
-            - name: config-data
-              mountPath: /etc/rclone
-            - name: adsblol
-              mountPath: /adsblol
-              mountPropagation: Bidirectional
-  - target:
-      kind: Deployment
-    patch: |-
-      - op: add
-        path: /spec/template/spec/volumes/-
-        value:
-          name: adsblol
-          emptyDir: {}
-      - op: add
-        path: /spec/template/spec/volumes/-
-        value:
-          name: state
-          persistentVolumeClaim:
-            claimName: planes-state-test
-      - op: add
-        path: /spec/template/spec/volumes/-
-        value:
-          name: config-data
-          secret:
-            secretName: adsblol-rclone
-      - op: add
-        path: /spec/template/spec/containers/0/volumeMounts/-
-        value:
-          name: adsblol
-          mountPath: /var/globe_history/2023
-          subPath: adsblol
-          mountPropagation: HostToContainer
-      - op: add
-        path: /spec/template/spec/containers/0/volumeMounts/-
-        value:
-          name: state
-          mountPath: /var/globe_history/internal_state
+              storage: 10Gi

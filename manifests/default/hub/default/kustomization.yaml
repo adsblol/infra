@@ -1,23 +1,23 @@
 resources:
-  - ../base
-  - resources.yaml
+- ../base
+- resources.yaml
 namePrefix: hub-
 patches:
-  - target:
-      kind: Deployment
-    patch: |-
-      - op: add
-        path: /spec/template/spec/containers/0/env/-
-        value:
-          name: READSB_NET_CONNECTOR
-          value: "planes-readsb,30004,beast_out"
-      - op: add
-        path: /spec/template/spec/containers/0/env/-
-        value:
-         name: READSB_NET_SBS_INPUT_PORT
-         value: "32006"
-      - op: add
-        path: /spec/template/spec/containers/0/env/-
-        value:
-         name: READSB_EXTRA_ARGS
-         value: "--debug=nS --net-receiver-id --write-prom=/run/readsb/metrics"
+- target:
+    kind: Deployment
+  patch: |-
+    - op: add
+      path: /spec/template/spec/containers/0/env/-
+      value:
+        name: READSB_NET_CONNECTOR
+        value: "planes-readsb,30004,beast_out;planes-readsb-test,30004,beast_out;external-readsb,30004,beast_reduce_out"
+    - op: add
+      path: /spec/template/spec/containers/0/env/-
+      value:
+       name: READSB_NET_SBS_INPUT_PORT
+       value: "32006"
+    - op: add
+      path: /spec/template/spec/containers/0/env/-
+      value:
+       name: READSB_EXTRA_ARGS
+       value: "--debug=nS --net-receiver-id --write-prom=/run/readsb/metrics --net-beast-reduce-interval=5"

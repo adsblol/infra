@@ -1,11 +1,12 @@
 resources:
-  - ingest/default
-  - hub/default
-  - mlat/default
-  - planes/default
-  - planes/test
-  - to-adsb-fi/default
-  - api/default
-  - haproxy/default
-  - resources.yaml
+- ingest/default
+- hub/default
+- mlat/default
+- planes/default
+- planes/test
+- external/default
+- api/default
+- haproxy/default
+- history/default
+- resources.yaml
 namespace: adsblol

@@ -1,10 +1,6 @@
 resources:
 - ../base
-namePrefix: ingest-
-commonLabels:
-  service: public
-# Patch:
-# add ENV
+namePrefix: external-
 patches:
 - target:
     kind: Deployment
@@ -13,9 +9,9 @@ patches:
       path: /spec/template/spec/containers/0/env/-
       value:
         name: READSB_NET_CONNECTOR
-        value: "hub-readsb,30004,beast_reduce_out"
+        value: "cnvr.io,30005,beast_reduce_out"
     - op: add
       path: /spec/template/spec/containers/0/env/-
       value:
        name: READSB_EXTRA_ARGS
-       value: "--debug=nS --net-ingest --net-receiver-id --write-receiver-id-json --net-beast-reduce-interval=0.5"
+       value: "--debug=nS --net-beast-reduce-interval=10"

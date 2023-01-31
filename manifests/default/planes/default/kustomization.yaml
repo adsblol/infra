@@ -1,107 +1,124 @@
 resources:
-  - ../base
-  - resources.yaml
+- ../base
+- resources.yaml
 namePrefix: planes-
+generatorOptions:
+  disableNameSuffixHash: true
+configMapGenerator:
+- name: tar1090-html
+  files:
+  - layers.js
 commonLabels:
   stage: prod
+configMapGenerator:
+- name: tar1090-config
+  files:
+  - layers.js
+  behavior: merge
 patches:
-  - target:
-      kind: Deployment
-    patch: |-
-      - op: replace
-        path: /spec/strategy
-        value:
-          type: Recreate
-      - op: add
-        path: /spec/template/spec/containers/0/env/-
-        value:
-          name: READSB_EXTRA_ARGS
-          value: "--debug=nS --net-receiver-id --tar1090-use-api --write-json-globe-index --heatmap 30 --write-globe-history /var/globe_history"
-      - op: add
-        path: /spec/template/spec/volumes/-
-        value:
+- target:
+    kind: Deployment
+  patch: |-
+    - op: replace
+      path: /spec/strategy
+      value:
+        type: Recreate
+    - op: add
+      path: /spec/template/spec/containers/0/env/-
+      value:
+        name: READSB_EXTRA_ARGS
+        value: "--debug=nS --net-receiver-id --tar1090-use-api --write-json-globe-index --heatmap 30 --write-globe-history /var/globe_history"
+    - op: add
+      path: /spec/template/spec/volumes/-
+      value:
+        name: tar1090-config
+        configMap:
           name: tar1090-config
-          configMap:
-            name: tar1090-config
-            defaultMode: 0755
-      - op: add
-        path: /spec/template/spec/volumes/-
-        value:
-          name: adsblol
-          emptyDir: {}
-      - op: add
-        path: /spec/template/spec/volumes/-
-        value:
-          name: state
-          persistentVolumeClaim:
-            claimName: planes-state
-      - op: add
-        path: /spec/template/spec/volumes/-
-        value:
-          name: config-data
-          secret:
-            secretName: adsblol-rclone
-      - op: add
-        path: /spec/template/spec/containers/0/volumeMounts/-
-        value:
-          name: adsblol
-          mountPath: /var/globe_history/2023
-          subPath: adsblol
-          mountPropagation: HostToContainer
-      - op: add
-        path: /spec/template/spec/containers/0/volumeMounts/-
-        value:
-          name: state
-          mountPath: /var/globe_history/internal_state
-      - op: add
-        path: /spec/template/spec/containers/0/volumeMounts/-
-        value:
-          name: tar1090-config
-          mountPath: /tar1090-config/config.js
-          subPath: config.js
-      - op: add
-        path: /spec/template/spec/containers/0/volumeMounts/-
-        value:
-          name: tar1090-config
-          mountPath: /etc/cont-init.d/04-tar1090-configure
-          subPath: 04-tar1090-configure
-  - target:
-      kind: Deployment
-    patch: |-
-      - op: add
-        path: /spec/template/spec/containers/1
-        value:
-          name: rclone
-          image: "rclone/rclone"
-          securityContext:
-            privileged: true
-            capabilities:
-              add:
-                - SYS_ADMIN
-          args:
-            - -v
-            - mount
-            - "adsblol:adsblol"
-            - /adsblol/adsblol
-            - --config=/etc/rclone/rclone.conf
-            - --allow-non-empty
-            - --allow-other
-            - --poll-interval=9s
-            - --dir-cache-time=9999h
-          lifecycle:
-            preStop:
-              exec:
-                command: ["/bin/sh", "-c", "fusermount -uz /adsblol"]
-          resources:
-            requests:
-              cpu: 250m
-              memory: 100Mi
-            limits:
-              cpu: 1
-              memory: 2048Mi
-          volumeMounts:
-            - name: config-data
-              mountPath: /etc/rclone
-            - name: adsblol
-              mountPath: /adsblol
-              mountPropagation: Bidirectional
+          defaultMode: 0755
+    - op: add
+      path: /spec/template/spec/volumes/-
+      value:
+        name: adsblol
+        emptyDir: {}
+    - op: add
+      path: /spec/template/spec/volumes/-
+      value:
+        name: state
+        persistentVolumeClaim:
+          claimName: planes-state
+    - op: add
+      path: /spec/template/spec/volumes/-
+      value:
+        name: config-data
+        secret:
+          secretName: adsblol-rclone
+    - op: add
+      path: /spec/template/spec/containers/0/volumeMounts/-
+      value:
+        name: adsblol
+        mountPath: /var/globe_history/2023
+        subPath: adsblol
+        mountPropagation: HostToContainer
+    - op: add
+      path: /spec/template/spec/containers/0/volumeMounts/-
+      value:
+        name: state
+        mountPath: /var/globe_history/internal_state
+    - op: add
+      path: /spec/template/spec/containers/0/volumeMounts/-
+      value:
+        name: tar1090-config
+        mountPath: /tar1090-config/config.js
+        subPath: config.js
+    - op: add
+      path: /spec/template/spec/containers/0/volumeMounts/-
+      value:
+        name: tar1090-config
+        mountPath: /etc/cont-init.d/04-tar1090-configure
+        subPath: 04-tar1090-configure
+    - op: add
+      path: /spec/template/spec/containers/0/volumeMounts/-
+      value:
+        name: tar1090-config
+        mountPath: /opt/tar1090/html/layers.js
+        subPath: layers.js
+- target:
+    kind: Deployment
+  patch: |-
+    - op: add
+      path: /spec/template/spec/containers/1
+      value:
+        name: rclone
+        image: "rclone/rclone"
+        securityContext:
+          privileged: true
+          capabilities:
+            add:
+              - SYS_ADMIN
+        args:
+          - -v
+          - mount
+          - "adsblol:adsblol"
+          - /adsblol/adsblol
+          - --config=/etc/rclone/rclone.conf
+          - --allow-non-empty
+          - --allow-other
+          - --poll-interval=9s
+          - --dir-cache-time=9999h
+        lifecycle:
+          preStop:
+            exec:
+              command: ["/bin/sh", "-c", "fusermount -uz /adsblol"]
+        resources:
+          requests:
+            cpu: 250m
+            memory: 100Mi
+          limits:
+            cpu: 1
+            memory: 2048Mi
+        volumeMounts:
+          - name: config-data
+            mountPath: /etc/rclone
+          - name: adsblol
+            mountPath: /adsblol
+            mountPropagation: Bidirectional
