@@ -1,0 +1,90 @@
+# create GitRepository
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: GitRepository
+metadata:
+  name: infra
+  namespace: adsblol
+spec:
+  interval: 1m
+  ref:
+    branch: main
+  url: https://github.com/adsblol/infra.git
+---
+# create Kustomization
+apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
+kind: Kustomization
+metadata:
+  name: infra
+  namespace: adsblol
+spec:
+  interval: 1m
+  path: ./manifests/default
+  prune: false
+  sourceRef:
+    kind: GitRepository
+    name: infra
+  validation: client
+  healthChecks:
+  - apiVersion: v1
+    kind: Service
+    name: api
+    namespace: adsblol
+  - apiVersion: v1
+    kind: Service
+    name: history
+    namespace: adsblol
+  - apiVersion: v1
+    kind: Service
+    name: planes-readsb
+    namespace: adsblol
+  - apiVersion: v1
+    kind: Service
+    name: planes-readsb-test
+    namespace: adsblol
+  - apiVersion: v1
+    kind: Service
+    name: planes-readsb-external
+    namespace: adsblol
+  - apiVersion: v1
+    kind: Service
+    name: planes-readsb-test-external
+    namespace: adsblol
+  - apiVersion: v1
+    kind: Service
+    name: planes-readsb-external
+    namespace: adsblol
+  - apiVersion: v1
+    kind: Service
+    name: planes-readsb-test-external
+    namespace: adsblol
+  - apiVersion: v1
+    kind: Service
+    name: planes-readsb-external
+    namespace: adsblol
+  - apiVersion: v1
+    kind: Service
+    name: planes-readsb-test-external
+    namespace: adsblol
+  - apiVersion: v1
+    kind: Service
+    name: planes-readsb-external
+    namespace: adsblol
+  - apiVersion: v1
+    kind: Service
+    name: planes-readsb-test-external
+    namespace: adsblol
+  - apiVersion: v1
+    kind: Service
+    name: planes-readsb-external
+    namespace: adsblol
+  - apiVersion: v1
+    kind: Service
+    name: planes-readsb-test-external
+    namespace: adsblol
+  - apiVersion: v1
+    kind: Service
+    name: planes-readsb-external
+    namespace: adsblol
+  - apiVersion: v1
+    kind: Service
+    name: planes-readsb-test-external
