@@ -9,7 +9,7 @@ patches:
       path: /spec/template/spec/containers/0/env/-
       value:
         name: READSB_NET_CONNECTOR
-        value: "cnvr.io,30005,beast_reduce_out"
+        value: "cnvr.io,30005,beast_out"
     - op: add
       path: /spec/template/spec/containers/0/env/-
       value:
