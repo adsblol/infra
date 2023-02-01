@@ -9,29 +9,31 @@ spec:
   template:
     spec:
       containers:
+      - name: mlat-server
+        image: ghcr.io/katlol/mlat-server
+        env:
+        - {name: MKL_NUM_THREADS, value: "1"}
+        - {name: NUMEXPR_NUM_THREADS, value: "1"}
+        - {name: OMP_NUM_THREADS, value: "1"}
+        - {name: PYTHONOPTIMIZE, value: "2"}
+        command:
+        - python
+        - /app/mlat-server
+        - --work-dir=/run/mlat-server
+        - --client-listen=31090
+        - --filtered-basestation-listen=30104
+        ports:
+        - containerPort: 31090
+          name: mlat-in
+        - containerPort: 30104
+          name: mlat-out
+        volumeMounts:
         - name: mlat-server
-          image: ghcr.io/katlol/mlat-server
-          env:
-            - { name: MKL_NUM_THREADS, value: "1" }
-            - { name: NUMEXPR_NUM_THREADS, value: "1" }
-            - { name: OMP_NUM_THREADS, value: "1" }
-            - { name: PYTHONOPTIMIZE, value: "2" }
-          command:
-            - python
-            - /app/mlat-server
-            - --work-dir=/run/mlat-server
-            - --client-listen=31090
-            - --basestation-connect=hub-readsb:32007
-          ports:
-            - containerPort: 31090
-              name: mlat-in
-          volumeMounts:
-            - name: mlat-server
-              mountPath: /run/mlat-server
+          mountPath: /run/mlat-server
       volumes:
-        - name: mlat-server
-          persistentVolumeClaim:
-            claimName: mlat-server
+      - name: mlat-server
+        persistentVolumeClaim:
+          claimName: mlat-server
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -39,7 +41,7 @@ metadata:
   name: mlat-server
 spec:
   accessModes:
-    - ReadWriteOnce
+  - ReadWriteOnce
   resources:
     requests:
       storage: 10Gi
@@ -50,11 +52,11 @@ metadata:
   name: mlat-server
 spec:
   ports:
-    - name: mlat-in
-      port: 31090
-      targetPort: mlat-in
-      protocol: TCP
-    - name: mlat-out
-      port: 30104
-      targetPort: 30104
-      protocol: TCP
+  - name: mlat-in
+    port: 31090
+    targetPort: mlat-in
+    protocol: TCP
+  - name: mlat-out
+    port: 30104
+    targetPort: mlat-out
+    protocol: TCP

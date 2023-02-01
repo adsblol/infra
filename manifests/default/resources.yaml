@@ -162,7 +162,7 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: planes-readsb
+            name: planes-readsb-test
             port:
               name: http-api
 

@@ -22,6 +22,11 @@ patches:
     - op: add
       path: /spec/template/spec/containers/0/env/-
       value:
+        name: READSB_NET_CONNECTOR
+        value: "mlat-mlat-server,30104,sbs_in_mlat"
+    - op: add
+      path: /spec/template/spec/containers/0/env/-
+      value:
         name: READSB_EXTRA_ARGS
         value: "--net-receiver-id --tar1090-use-api --write-json-globe-index --heatmap 30 --write-globe-history /var/globe_history"
     - op: add
@@ -43,3 +48,8 @@ patches:
           resources:
             requests:
               storage: 10Gi
+    - op: add
+      path: /spec/template/spec/containers/0/env/-
+      value:
+       name: READSB_NET_SBS_INPUT_PORT
+       value: "32006"
