@@ -5,20 +5,26 @@ namePrefix: planes-
 generatorOptions:
   disableNameSuffixHash: true
 configMapGenerator:
-- name: tar1090-html
-  files:
-  - layers.js
-commonLabels:
-  stage: prod
-configMapGenerator:
 - name: tar1090-config
   files:
   - layers.js
   behavior: merge
+commonLabels:
+  stage: prod
 patches:
 - target:
     kind: Deployment
   patch: |-
+    - op: replace
+      # livenessProbe for container readsb
+      # 404 /data/receiver.json caused downtime
+      path: /spec/template/spec/containers/0/livenessProbe
+      value:
+        httpGet:
+          path: /data/receiver.json
+          port: http
+        periodSeconds: 10
+        tcpSocket: null
     - op: replace
       path: /spec/strategy
       value:

@@ -1,4 +1,4 @@
 resources:
-  - readsb.yaml
+- readsb.yaml
 commonLabels:
   app: readsb
