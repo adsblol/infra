@@ -230,6 +230,7 @@ metadata:
   name: map
   annotations:
     external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
+    nginx.ingress.kubernetes.io/app-root: /syncmap
 spec:
   tls:
   - hosts:

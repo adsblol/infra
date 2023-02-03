@@ -26,10 +26,6 @@ spec:
           tcpSocket:
             port: 80
           initialDelaySeconds: 3
-      volumes:
-      - name: mlat-map-data
-        persistentVolumeClaim:
-          claimName: mlat-map-data
 ---
 kind: Service
 apiVersion: v1
