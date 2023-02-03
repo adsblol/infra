@@ -28,7 +28,7 @@ spec:
     protocol: TCP
   - name: beast-30004
     port: 30004
-    targetPort: beast-1337
+    targetPort: beast-30004
     protocol: TCP
   - name: beast-30005
     port: 30005
@@ -223,3 +223,33 @@ spec:
             name: history
             port:
               name: http-nginx
+---
+kind: Ingress
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: map
+  annotations:
+    external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
+spec:
+  tls:
+  - hosts:
+    - adsb.lol
+    secretName: adsblol-tls
+  rules:
+  - host: map.adsb.lol
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: mlat-map
+            port:
+              name: http
+      - path: /api
+        pathType: Prefix
+        backend:
+          service:
+            name: api
+            port:
+              name: http

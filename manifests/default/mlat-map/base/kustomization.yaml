@@ -1,0 +1,4 @@
+resources:
+- mlat-map.yaml
+commonLabels:
+  app: mlat-map

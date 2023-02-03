@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mlat-map
+spec:
+  template:
+    spec:
+      containers:
+      - name: mlat-map
+        image: ghcr.io/adsblol/mlat-server-sync-map:latest
+        ports:
+        - containerPort: 80
+          name: http
+        resources:
+          requests:
+            cpu: 100m
+            memory: 64Mi
+          limits:
+            cpu: 100m
+            memory: 128Mi
+        livenessProbe:
+          tcpSocket:
+            port: 80
+          initialDelaySeconds: 3
+        readinessProbe:
+          tcpSocket:
+            port: 80
+          initialDelaySeconds: 3
+      volumes:
+      - name: mlat-map-data
+        persistentVolumeClaim:
+          claimName: mlat-map-data
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: mlat-map
+spec:
+  ports:
+  - name: http
+    port: 80
+    targetPort: http
+    protocol: TCP
