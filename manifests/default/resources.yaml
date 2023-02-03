@@ -66,6 +66,9 @@ metadata:
       location /discord {
         return 302 https://discord.gg/3wPfmyNFRq;
       }
+      location /todo {
+        return 302 https://github.com/orgs/adsblol/projects/1/views/1;
+      }
 spec:
   tls:
   - hosts:
