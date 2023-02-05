@@ -9,9 +9,9 @@ patches:
       path: /spec/template/spec/containers/0/env/-
       value:
         name: READSB_NET_CONNECTOR
-        value: "cnvr.io,30005,beast_out"
+        value: "hub-readsb,30004,beast_out;cnvr.io,30005,beast_out"
     - op: add
       path: /spec/template/spec/containers/0/env/-
       value:
        name: READSB_EXTRA_ARGS
-       value: "--debug=nS --net-beast-reduce-interval=10"
+       value: "--debug=nS --net-beast-reduce-interval=5 --net-garbage=30419"
