@@ -38,7 +38,6 @@ spec:
     port: 31090
     targetPort: mlat-31090
     protocol: TCP
-  - name:
   type: LoadBalancer
 ---
 # allow all network in this namespace
