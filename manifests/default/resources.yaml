@@ -38,6 +38,7 @@ spec:
     port: 31090
     targetPort: mlat-31090
     protocol: TCP
+  - name:
   type: LoadBalancer
 ---
 # allow all network in this namespace
@@ -255,5 +256,30 @@ spec:
         backend:
           service:
             name: api
+            port:
+              name: http
+---
+# Rewrite /synctable/0A/ to /synctable/all/
+kind: Ingress
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: map-table
+  annotations:
+    external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /synctable/all/$2
+spec:
+  tls:
+  - hosts:
+    - adsb.lol
+    secretName: adsblol-tls
+  rules:
+  - host: map.adsb.lol
+    http:
+      paths:
+      - path: /synctable/0A(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: mlat-map
             port:
               name: http
