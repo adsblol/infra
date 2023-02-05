@@ -14,4 +14,4 @@ patches:
       path: /spec/template/spec/containers/0/env/-
       value:
        name: READSB_EXTRA_ARGS
-       value: "--debug=nS --net-beast-reduce-interval=5 --net-garbage=30419"
+       value: "--debug=nS --net-beast-reduce-interval=5 --net-garbage=30419 --net-receiver-id"
