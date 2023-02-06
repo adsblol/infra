@@ -1,2 +1,4 @@
 resources:
-  - ../base
+- ../base
+configurations:
+- config-servicemonitor-matchlabels.yaml

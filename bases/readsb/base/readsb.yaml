@@ -12,63 +12,63 @@ spec:
         configMap:
           name: serve-run-http-config
       containers:
-        - name: readsb
-          volumeMounts:
-            - name: run
-              mountPath: /run/readsb
-          image: ghcr.io/sdr-enthusiasts/docker-tar1090:latest
-          resources:
-            limits:
-              cpu: "1"
-              memory: 512Mi
-            requests:
-              cpu: 100m
-              memory: 128Mi
-          startupProbe:
-            tcpSocket:
-              port: 30004
-            initialDelaySeconds: 15
-          livenessProbe:
-            tcpSocket:
-              port: 30004
-            initialDelaySeconds: 15
-          readinessProbe:
-            tcpSocket:
-              port: 30004
-            initialDelaySeconds: 15
-          ports:
-            - containerPort: 80
-              name: http
-            - containerPort: 30004
-              name: adsb-in
-            - containerPort: 30005
-              name: adsb-out
-            - containerPort: 30006
-              name: adsb-out-r
-            - containerPort: 32006
-              name: sbs-in
-            - containerPort: 32007
-              name: sbs-out
-            - containerPort: 30152
-              name: http-api
-          env:
-            - name: TZ
-              value: "Europe/Amsterdam"
-            - name: MLATPORT
-              value: "30105"
-            - name: READSB_MAX_RANGE
-              value: "99999"
-        - name: serve-run-http
-          image: nginx:alpine
-          volumeMounts:
-            - name: run
-              mountPath: /usr/share/nginx/html
-            - name: serve-run-http-config
-              mountPath: /etc/nginx/conf.d/default.conf
-              subPath: default.conf
-          ports:
-            - containerPort: 150
-              name: json-stats
+      - name: readsb
+        volumeMounts:
+        - name: run
+          mountPath: /run/readsb
+        image: ghcr.io/sdr-enthusiasts/docker-tar1090:latest
+        resources:
+          limits:
+            cpu: "1"
+            memory: 512Mi
+          requests:
+            cpu: 100m
+            memory: 128Mi
+        startupProbe:
+          tcpSocket:
+            port: 30004
+          initialDelaySeconds: 15
+        livenessProbe:
+          tcpSocket:
+            port: 30004
+          initialDelaySeconds: 15
+        readinessProbe:
+          tcpSocket:
+            port: 30004
+          initialDelaySeconds: 15
+        ports:
+        - containerPort: 80
+          name: http
+        - containerPort: 30004
+          name: adsb-in
+        - containerPort: 30005
+          name: adsb-out
+        - containerPort: 30006
+          name: adsb-out-r
+        - containerPort: 32006
+          name: sbs-in
+        - containerPort: 32007
+          name: sbs-out
+        - containerPort: 30152
+          name: http-api
+        env:
+        - name: TZ
+          value: "Europe/Amsterdam"
+        - name: MLATPORT
+          value: "30105"
+        - name: READSB_MAX_RANGE
+          value: "99999"
+      - name: serve-run-http
+        image: nginx:alpine
+        volumeMounts:
+        - name: run
+          mountPath: /usr/share/nginx/html
+        - name: serve-run-http-config
+          mountPath: /etc/nginx/conf.d/default.conf
+          subPath: default.conf
+        ports:
+        - containerPort: 150
+          name: json-stats
 ---
 apiVersion: v1
 kind: Service
@@ -76,24 +76,34 @@ metadata:
   name: readsb
 spec:
   ports:
-    - name: http
-      port: 80
-      targetPort: http
-    - name: http-api
-      port: 30152
-      targetPort: http-api
-    - name: adsb-in
-      port: 30004
-      targetPort: adsb-in
-    - name: adsb-out
-      port: 30005
-      targetPort: adsb-out
-    - name: adsb-out-r
-      port: 30006
-      targetPort: adsb-out-r
-    - name: json-stats
-      port: 150
-      targetPort: json-stats
-    - name: mlat-in
-      port: 32007
-      targetPort: 32007
+  - name: http
+    port: 80
+    targetPort: http
+  - name: http-api
+    port: 30152
+    targetPort: http-api
+  - name: adsb-in
+    port: 30004
+    targetPort: adsb-in
+  - name: adsb-out
+    port: 30005
+    targetPort: adsb-out
+  - name: adsb-out-r
+    port: 30006
+    targetPort: adsb-out-r
+  - name: json-stats
+    port: 150
+    targetPort: json-stats
+  - name: mlat-in
+    port: 32007
+    targetPort: 32007
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: readsb
+spec:
+  selector:
+    matchLabels: {}
+  endpoints:
+  - port: json-stats

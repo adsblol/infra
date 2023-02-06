@@ -1,6 +1,5 @@
 resources:
 - ../base
-- resources.yaml
 namePrefix: hub-
 patches:
 - target:

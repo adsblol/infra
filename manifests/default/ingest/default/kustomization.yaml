@@ -18,4 +18,4 @@ patches:
       path: /spec/template/spec/containers/0/env/-
       value:
        name: READSB_EXTRA_ARGS
-       value: "--debug=nS --net-ingest --net-receiver-id --write-receiver-id-json --net-beast-reduce-interval=0.5"
+       value: "--debug=nS --net-ingest --net-receiver-id --write-prom=/run/readsb/metrics --write-receiver-id-json --net-beast-reduce-interval=0.5"

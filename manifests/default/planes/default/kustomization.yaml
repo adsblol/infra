@@ -38,7 +38,7 @@ patches:
       path: /spec/template/spec/containers/0/env/-
       value:
         name: READSB_EXTRA_ARGS
-        value: "--debug=nS --net-receiver-id --tar1090-use-api --write-json-globe-index --heatmap 30 --write-globe-history /var/globe_history"
+        value: "--debug=nS --net-receiver-id --tar1090-use-api --write-json-globe-index --heatmap 30 --write-globe-history /var/globe_history --write-prom=/run/readsb/metrics"
     - op: add
       path: /spec/template/spec/volumes/-
       value:
