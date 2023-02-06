@@ -72,6 +72,9 @@ metadata:
       location /feed {
         return 302 https://github.com/adsblol/feed;
       }
+      location /stats {
+        return 302 https://grafana.adsb.lol/public-dashboards/4fcdab6726f34960b73be95ecb74386e;
+      }
 spec:
   tls:
   - hosts:
