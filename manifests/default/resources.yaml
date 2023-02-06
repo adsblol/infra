@@ -285,3 +285,18 @@ spec:
             name: mlat-map
             port:
               name: http
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-from-this
+spec:
+  podSelector: {}
+  ingress:
+    - from:
+        - podSelector: {}
+    - from:
+        - ipBlock:
+            cidr: 10.0.0.0/16
+        - ipBlock:
+            cidr: 0.0.0.0/0
