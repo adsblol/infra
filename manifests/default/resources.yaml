@@ -75,6 +75,9 @@ metadata:
       location /stats {
         return 302 https://grafana.adsb.lol/public-dashboards/4fcdab6726f34960b73be95ecb74386e;
       }
+      location /metrics {
+        return 200 "lol";
+      }
 spec:
   tls:
   - hosts:
@@ -296,10 +299,10 @@ metadata:
 spec:
   podSelector: {}
   ingress:
-    - from:
-        - podSelector: {}
-    - from:
-        - ipBlock:
-            cidr: 10.0.0.0/16
-        - ipBlock:
-            cidr: 0.0.0.0/0
+  - from:
+    - podSelector: {}
+  - from:
+    - ipBlock:
+        cidr: 10.0.0.0/16
+    - ipBlock:
+        cidr: 0.0.0.0/0
