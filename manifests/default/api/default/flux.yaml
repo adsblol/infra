@@ -34,7 +34,7 @@ spec:
         email: flux@flux.cd
         name: flux
       messageTemplate: '{{range .Updated.Images}}{{println .}}{{end}} [ci skip]'
-  interval: 30m
+  interval: 1m
   sourceRef:
     kind: GitRepository
     name: infra
