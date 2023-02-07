@@ -1,0 +1,43 @@
+apiVersion: image.toolkit.fluxcd.io/v1alpha2
+kind: ImagePolicy
+metadata:
+  name: api
+spec:
+  imageRepositoryRef:
+    name: api
+  filterTags:
+    extract: $ts
+    pattern: ^main-[a-fA-F0-9]+-(?P<ts>.*)
+  policy:
+    numerical:
+      order: asc
+---
+apiVersion: image.toolkit.fluxcd.io/v1alpha2
+kind: ImageRepository
+metadata:
+  name: api
+spec:
+  image: ghcr.io/adsblol/api
+  interval: 1m
+---
+apiVersion: image.toolkit.fluxcd.io/v1beta1
+kind: ImageUpdateAutomation
+metadata:
+  name: api
+spec:
+  git:
+    checkout:
+      ref:
+        branch: main
+    commit:
+      author:
+        email: flux@flux.cd
+        name: flux
+      messageTemplate: '{{range .Updated.Images}}{{println .}}{{end}} [ci skip]'
+  interval: 30m
+  sourceRef:
+    kind: GitRepository
+    name: infra
+  update:
+    path: ./manifests/default
+    strategy: Setters

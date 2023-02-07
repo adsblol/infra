@@ -12,3 +12,11 @@ resources:
 - resources.yaml
 - flux.yaml
 namespace: adsblol
+
+images:
+- name: ghcr.io/adsblol/api
+  newTag: main # {"$imagepolicy": "adsblol:api:tag"}
+- name: ghcr.io/adsblol/history
+  newTag: main # {"$imagepolicy": "adsblol:history:tag"}
+- name: ghcr.io/adsblol/mlat-server-sync-map
+  newTag: latest # {"$imagepolicy": "adsblol:mlat-server-sync-map:tag"}

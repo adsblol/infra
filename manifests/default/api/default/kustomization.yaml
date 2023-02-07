@@ -1,4 +1,5 @@
 resources:
-  - ../base
+- ../base
+- flux.yaml
 commonLabels:
   name: api

@@ -9,6 +9,8 @@ spec:
   ref:
     branch: main
   url: https://github.com/adsblol/infra.git
+  secretRef:
+    name: infra
 ---
 # create Kustomization
 apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
@@ -24,3 +26,22 @@ spec:
     kind: GitRepository
     name: infra
   validation: client
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: infra
+spec:
+  secretStoreRef:
+    kind: ClusterSecretStore
+    name: vault
+  data:
+  - remoteRef:
+      key: adsblol/infra
+      property: identity
+    secretKey: identity
+  - remoteRef:
+      key: adsblol/infra
+      property: known_hosts
+    secretKey: known_hosts
+  refreshInterval: 1m
