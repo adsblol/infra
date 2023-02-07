@@ -8,7 +8,7 @@ spec:
   interval: 1m
   ref:
     branch: main
-  url: https://github.com/adsblol/infra.git
+  url: ssh://git@github.com/adsblol/infra.git
   secretRef:
     name: infra
 ---
