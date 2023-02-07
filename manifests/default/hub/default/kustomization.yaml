@@ -9,7 +9,7 @@ patches:
       path: /spec/template/spec/containers/0/env/-
       value:
         name: READSB_NET_CONNECTOR
-        value: "planes-readsb,30004,beast_out"
+        value: "planes-readsb,30004,beast_out;planes-readsb-test,30004,beast_out"
     - op: add
       path: /spec/template/spec/containers/0/env/-
       value:
@@ -19,4 +19,4 @@ patches:
       path: /spec/template/spec/containers/0/env/-
       value:
        name: READSB_EXTRA_ARGS
-       value: "--debug=nS --net-receiver-id --write-prom=/run/readsb/metrics --net-beast-reduce-interval=5 --forward-mlat --net-garbage=30419"
+       value: "--debug=nS --net-receiver-id --write-prom=/run/readsb/metrics --net-beast-reduce-interval=0.25 --forward-mlat --net-garbage=30419"
