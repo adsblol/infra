@@ -115,25 +115,4 @@ metadata:
   name: readsb-headless
 spec:
   clusterIP: None
-  ports:
-  - name: http
-    port: 80
-    targetPort: http
-  - name: http-api
-    port: 30152
-    targetPort: http-api
-  - name: adsb-in
-    port: 30004
-    targetPort: adsb-in
-  - name: adsb-out
-    port: 30005
-    targetPort: adsb-out
-  - name: adsb-out-r
-    port: 30006
-    targetPort: adsb-out-r
-  - name: json-stats
-    port: 150
-    targetPort: json-stats
-  - name: mlat-in
-    port: 32007
-    targetPort: 32007
+  ports: null
