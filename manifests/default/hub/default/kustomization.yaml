@@ -28,7 +28,6 @@ patches:
         - --net-json-port=30047
         - --net-api-port=30152
         - --net-sbs-in-port=32006
-        - --max-range=99999
         - --net-connector=planes-readsb,30004,beast_out
         - --net-connector=planes-readsb-test,30004,beast_out
         - --net-sbs-in-port=32006

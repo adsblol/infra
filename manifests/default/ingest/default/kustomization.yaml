@@ -31,7 +31,6 @@ patches:
       - --net-json-port=30047
       - --net-api-port=30152
       - --net-sbs-in-port=32006
-      - --max-range=1000
       - --net-connector=external-readsb,30004,beast_reduce_out
       - --debug=nS
       - --net-ingest

@@ -27,7 +27,6 @@ patches:
         - --net-json-port=30047
         - --net-api-port=30152
         - --net-sbs-in-port=32006
-        - --max-range=99999
         - --net-connector=hub-readsb,30004,beast_out
         - --net-connector=cnvr.io,30005,beast_out
         - --debug=nS
