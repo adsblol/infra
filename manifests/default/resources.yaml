@@ -78,6 +78,9 @@ metadata:
       location /metrics {
         return 200 "lol";
       }
+      location /graphs1090 {
+        return 302 https://grafana.adsb.lol/public-dashboards/4fcdab6726f34960b73be95ecb74386e;
+      }
 spec:
   tls:
   - hosts:
@@ -108,9 +111,57 @@ spec:
 kind: Ingress
 apiVersion: networking.k8s.io/v1
 metadata:
-  name: adsblol
+  name: globe-reapi
   annotations:
     external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
+spec:
+  tls:
+  - hosts:
+    - globe.adsb.lol
+    secretName: adsblol-tls
+  rules:
+  - host: globe.adsb.lol
+    http:
+      paths:
+      - path: /re-api
+        pathType: Prefix
+        backend:
+          service:
+            name: planes-readsb
+            port:
+              name: http-api
+  - host: globe.planes.lol
+    http:
+      paths:
+      - path: /re-api
+        pathType: Prefix
+        backend:
+          service:
+            name: planes-readsb
+            port:
+              name: http-api
+  - host: test.adsb.lol
+    http:
+      paths:
+      - path: /re-api
+        pathType: Prefix
+        backend:
+          service:
+            name: planes-readsb-test
+            port:
+              name: http-api
+
+---
+kind: Ingress
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: tar1090
+  annotations:
+    external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      location /graphs1090 {
+        return 302 https://grafana.adsb.lol/public-dashboards/4fcdab6726f34960b73be95ecb74386e;
+      }
 spec:
   tls:
   - hosts:
@@ -137,26 +188,6 @@ spec:
             name: planes-readsb
             port:
               name: http
-  - host: globe.adsb.lol
-    http:
-      paths:
-      - path: /re-api
-        pathType: Prefix
-        backend:
-          service:
-            name: planes-readsb
-            port:
-              name: http-api
-  - host: globe.planes.lol
-    http:
-      paths:
-      - path: /re-api
-        pathType: Prefix
-        backend:
-          service:
-            name: planes-readsb
-            port:
-              name: http-api
   - host: test.adsb.lol
     http:
       paths:
@@ -167,16 +198,6 @@ spec:
             name: planes-readsb-test
             port:
               name: http
-  - host: test.adsb.lol
-    http:
-      paths:
-      - path: /re-api
-        pathType: Prefix
-        backend:
-          service:
-            name: planes-readsb-test
-            port:
-              name: http-api
 
 ---
 apiVersion: cert-manager.io/v1
