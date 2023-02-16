@@ -1,14 +1,15 @@
 resources:
+- haproxy/default
 - ingest/default
+- external/default
 - hub/default
 - mlat/default
+- reapi/default
 - planes/default
 - planes/test
-- external/default
-- api/default
-- haproxy/default
-- history/default
 - mlat-map/default
+- api/default
+- history/default
 - resources.yaml
 - flux.yaml
 namespace: adsblol
@@ -19,3 +20,5 @@ images:
   newTag: main-933f7ba5-1675794746 # {"$imagepolicy": "adsblol:history:tag"}
 - name: ghcr.io/adsblol/mlat-server-sync-map
   newTag: master-413c02fc-1675794709 # {"$imagepolicy": "adsblol:mlat-server-sync-map:tag"}
+- name: ghcr.io/katlol/readsb
+  newTag: 3ef880844dde1a18d5b053cb0775064083171f93

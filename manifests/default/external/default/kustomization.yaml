@@ -4,7 +4,6 @@ namePrefix: external-
 images:
 - name: ghcr.io/sdr-enthusiasts/docker-tar1090:latest
   newName: ghcr.io/katlol/readsb
-  newTag: 6f28ce612cdf284eda7a3c316d17f6439d5afd39
 patches:
 - target:
     kind: Deployment

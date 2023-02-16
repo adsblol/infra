@@ -1,55 +1,126 @@
 resources:
-- ../base
+- ../../../../bases/readsb/redux
 - resources.yaml
 namePrefix: planes-
 nameSuffix: -test
+
 commonLabels:
   stage: test
+
+configMapGenerator:
+- name: html-overlay
+  literals:
+  - config.js=PageName = "ADSB.lol - Open Source ADSB/MLAT aggregator."; BingMapsAPIKey = "AqCdYNFHcAZuy4k9zT_UXZMdfSo5zN-mImkwN6PzcXNYyo0bYHaHik2F8qg-h1c1"; shareBaseUrl = "https://test.adsb.lol";MapType_tar1090="osm";
+  - globeRates.json={"refresh:" 500}
+
 patches:
 - target:
     kind: Deployment
   patch: |-
-    # Make it a statefulset
+    # Turn it into a statefulset
     - op: replace
       path: /kind
       value: StatefulSet
-    - op: add
-      path: /spec/serviceName
-      value: planes-test
 - target:
     kind: StatefulSet
   patch: |-
     - op: add
-      path: /spec/template/spec/containers/0/env/-
+      path: /spec/template/spec/containers/0/command
       value:
-        name: READSB_NET_CONNECTOR
-        value: "mlat-mlat-server,30104,sbs_in_mlat"
+      - /usr/local/bin/readsb
+      - --net
+      - --quiet
+      - --write-json=/run/readsb
+      - --heatmap-dir=/var/globe_history
+      - --write-state=/var/globe_history
+      - --json-trace-interval=15
+      - --json-reliable=2
+      - --net-ri-port=30001
+      - --net-ro-port=30002
+      - --net-sbs-port=30003
+      - --net-bi-port=30004,30104
+      - --net-bo-port=30005
+      - --net-beast-reduce-out-port=30006
+      - --net-json-port=30047
+      - --net-api-port=30152
+      - --net-sbs-in-port=32006
+      - --net-connector=hub-readsb,30006,beast_in
+      - --net-connector=mlat-mlat-server,30104,sbs_in_mlat
+      - --debug=nS
+      - --net-receiver-id
+      - --tar1090-use-api
+      - --write-json-globe-index
+      - --heatmap=30
+      - --write-globe-history=/var/globe_history
+      - --write-prom=/run/readsb/metrics
+      - --write-json-every=0.5
+      - --db-file=/usr/local/share/tar1090/aircraft.csv.gz
     - op: add
-      path: /spec/template/spec/containers/0/env/-
+      path: /spec/template/spec/containers/-
       value:
-        name: READSB_EXTRA_ARGS
-        value: "--net-receiver-id --tar1090-use-api --write-json-globe-index --heatmap 30 --write-globe-history /var/globe_history"
+        name: tar1090
+        image: ghcr.io/katlol/tar1090:master
+        imagePullPolicy: Always
+        resources:
+          requests:
+            cpu: 100m
+            memory: 64Mi
+          limits:
+            cpu: 1
+            memory: 256Mi
+        ports:
+        - containerPort: 80
+          name: http
+        volumeMounts:
+        - name: run
+          mountPath: /run/readsb
+        - name: globe-history
+          mountPath: /var/globe_history
+        - name: html-overlay
+          mountPath: /opt/tar1090/config.js
+          subPath: config.js
+        - name: html-overlay
+          mountPath: /opt/tar1090/globeRates.json
+          subPath: globeRates.json
     - op: add
       path: /spec/template/spec/containers/0/volumeMounts/-
       value:
-        name: planes-test
-        mountPath: /var/globe_history/
+        name: globe-history
+        mountPath: /var/globe_history
     - op: add
       path: /spec/volumeClaimTemplates
       value: []
+    # Add a pvc for each replica of the statefulset (globe-history)
     - op: add
       path: /spec/volumeClaimTemplates/-
       value:
         metadata:
-          name: planes-test
+          name: globe-history
         spec:
+          storageClassName: nfs-provisioner
+          accessModes:
+          - ReadWriteOnce
+          resources:
+            requests:
+              storage: 10Gi
+    # Add another volumeClaimTemplate for run-readsb (remove & add to avoid index 0)
+    - op: remove
+      path: /spec/template/spec/volumes/0
+    - op: add
+      path: /spec/volumeClaimTemplates/-
+      value:
+        metadata:
+          name: run
+        spec:
+          storageClassName: nfs-provisioner
           accessModes:
           - ReadWriteOnce
           resources:
             requests:
               storage: 10Gi
     - op: add
-      path: /spec/template/spec/containers/0/env/-
+      path: /spec/template/spec/volumes/-
       value:
-       name: READSB_NET_SBS_INPUT_PORT
-       value: "32006"
+        name: html-overlay
+        configMap:
+          name: html-overlay

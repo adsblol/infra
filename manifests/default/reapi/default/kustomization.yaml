@@ -1,6 +1,6 @@
 resources:
 - ../base
-namePrefix: hub-
+namePrefix: reapi-
 
 images:
 - name: ghcr.io/sdr-enthusiasts/docker-tar1090:latest
@@ -27,11 +27,9 @@ patches:
         - --net-json-port=30047
         - --net-api-port=30152
         - --net-sbs-in-port=32006
-        - --net-connector=planes-readsb,30004,beast_out
+        - --net-connector=hub-readsb,30006,beast_in
+        - --net-connector=mlat-mlat-server,30104,sbs_in_mlat
         - --net-sbs-in-port=32006
         - --debug=nS
         - --net-receiver-id
         - --write-prom=/run/readsb/metrics
-        - --forward-mlat
-        - --net-garbage=30419
-        - --net-beast-reduce-interval=0.5

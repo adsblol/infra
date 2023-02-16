@@ -1,11 +1,11 @@
----
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: state
+  name: planes-test-globe-history
 spec:
+  storageClassName: nfs-provisioner
   accessModes:
-    - ReadWriteOnce
+  - ReadWriteOnce
   resources:
     requests:
       storage: 10Gi
