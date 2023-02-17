@@ -47,7 +47,7 @@ patches:
       - --net-json-port=30047
       - --net-api-port=30152
       - --net-sbs-in-port=32006
-      - --net-connector=hub-readsb,30006,beast_in
+      - --net-connector=hub-readsb,30005,beast_in
       - --net-connector=mlat-mlat-server,30104,sbs_in_mlat
       - --debug=nS
       - --net-receiver-id
@@ -107,20 +107,6 @@ patches:
             requests:
               storage: 10Gi
     # Add another volumeClaimTemplate for run-readsb (remove & add to avoid index 0)
-    - op: remove
-      path: /spec/template/spec/volumes/0
-    - op: add
-      path: /spec/volumeClaimTemplates/-
-      value:
-        metadata:
-          name: run
-        spec:
-          storageClassName: nfs-provisioner
-          accessModes:
-          - ReadWriteOnce
-          resources:
-            requests:
-              storage: 10Gi
     - op: add
       path: /spec/template/spec/volumes/-
       value:
@@ -152,3 +138,10 @@ patches:
     - op: add
       path: /spec/template/spec/containers/0/tty
       value: true
+    # UpdateStrategy
+    - op: add
+      path: /spec/updateStrategy
+      value:
+        type: RollingUpdate
+        rollingUpdate:
+          partition: 0
