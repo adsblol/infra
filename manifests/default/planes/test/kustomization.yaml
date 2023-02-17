@@ -142,3 +142,6 @@ patches:
         name: mount-run
         mountPath: /mount-run/run.sh
         subPath: run.sh
+    - op: add
+      path: /spec/template/spec/containers/0/resources/limits/memory
+      value: 1500Mi
