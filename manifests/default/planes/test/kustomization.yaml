@@ -145,3 +145,10 @@ patches:
     - op: add
       path: /spec/template/spec/containers/0/resources/limits/memory
       value: 1500Mi
+    # add stdin/tty to the container
+    - op: add
+      path: /spec/template/spec/containers/0/stdin
+      value: true
+    - op: add
+      path: /spec/template/spec/containers/0/tty
+      value: true
