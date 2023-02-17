@@ -12,7 +12,9 @@ configMapGenerator:
   literals:
   - config.js=PageName = "ADSB.lol - Open Source ADSB/MLAT aggregator."; BingMapsAPIKey = "AqCdYNFHcAZuy4k9zT_UXZMdfSo5zN-mImkwN6PzcXNYyo0bYHaHik2F8qg-h1c1"; shareBaseUrl = "https://test.adsb.lol";MapType_tar1090="osm";
   - globeRates.json={"refresh:" 500}
-
+- name: mount-run
+  files:
+  - run.sh
 patches:
 - target:
     kind: Deployment
@@ -27,6 +29,7 @@ patches:
     - op: add
       path: /spec/template/spec/containers/0/command
       value:
+      - /mount-run/run.sh
       - /usr/local/bin/readsb
       - --net
       - --quiet
@@ -124,3 +127,18 @@ patches:
         name: html-overlay
         configMap:
           name: html-overlay
+    # Add mount-run
+    - op: add
+      path: /spec/template/spec/volumes/-
+      value:
+        name: mount-run
+        configMap:
+          name: mount-run
+          defaultMode: 0755
+    # Add volumeMount for container 0 for mount-run/run.sh
+    - op: add
+      path: /spec/template/spec/containers/0/volumeMounts/-
+      value:
+        name: mount-run
+        mountPath: /mount-run/run.sh
+        subPath: run.sh
