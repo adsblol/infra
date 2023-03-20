@@ -15,7 +15,7 @@ resources:
 namespace: adsblol
 images:
 - name: ghcr.io/adsblol/api
-  newTag: main-9e2e6faf-1679309011 # {"$imagepolicy": "adsblol:api:tag"}
+  newTag: main-6d797f1e-1679309369 # {"$imagepolicy": "adsblol:api:tag"}
 - name: ghcr.io/adsblol/history
   newTag: main-933f7ba5-1675794746 # {"$imagepolicy": "adsblol:history:tag"}
 - name: ghcr.io/adsblol/mlat-server-sync-map
