@@ -114,9 +114,9 @@ metadata:
   name: globe-reapi
   annotations:
     external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
-    # nginx.ingress.kubernetes.io/affinity: "cookie"
-    # nginx.ingress.kubernetes.io/session-cookie-name: "globe-reapi-sticky"
-    # nginx.ingress.kubernetes.io/session-cookie-max-age: "86400"
+    nginx.ingress.kubernetes.io/affinity: "cookie"
+    nginx.ingress.kubernetes.io/session-cookie-name: "globe-reapi-sticky"
+    nginx.ingress.kubernetes.io/session-cookie-max-age: "86400"
 spec:
   tls:
   - hosts:
@@ -130,7 +130,7 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: planes-readsb
+            name: planes-readsb-test
             port:
               name: http-api
   - host: test.adsb.lol
@@ -140,7 +140,7 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: planes-readsb-test
+            name: planes-readsb
             port:
               name: http-api
 ---
@@ -149,11 +149,11 @@ apiVersion: networking.k8s.io/v1
 metadata:
   name: tar1090
   annotations:
+    nginx.ingress.kubernetes.io/affinity: "cookie"
+    nginx.ingress.kubernetes.io/session-cookie-name: "tar1090-sticky"
+    nginx.ingress.kubernetes.io/session-cookie-max-age: "86400"
     external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
     nginx.ingress.kubernetes.io/configuration-snippet: |
-      location /graphs1090 {
-        return 302 https://grafana.adsb.lol/public-dashboards/4fcdab6726f34960b73be95ecb74386e;
-      }
       location /globeRates.json { return 200 "{\"refresh\": 500}" ;}
 spec:
   tls:
@@ -168,7 +168,7 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: planes-readsb
+            name: planes-readsb-test
             port:
               name: http
   - host: test.adsb.lol
@@ -178,7 +178,7 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: planes-readsb-test
+            name: planes-readsb
             port:
               name: http
 ---
@@ -294,6 +294,30 @@ spec:
             name: mlat-map
             port:
               name: http
+---
+kind: Ingress
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: re-api
+  annotations:
+    external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
+spec:
+  tls:
+  - hosts:
+    - adsb.lol
+    secretName: adsblol-tls
+  rules:
+  - host: re-api.adsb.lol
+    http:
+      paths:
+      - path: /re-api/
+        pathType: Prefix
+        backend:
+          service:
+            name: reapi-readsb
+            port:
+              name: http-api
+
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy

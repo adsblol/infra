@@ -7,7 +7,8 @@ spec:
     spec:
       volumes:
       - name: run
-        emptyDir: {}
+        emptyDir:
+          medium: Memory
       - name: serve-run-http-config
         configMap:
           name: serve-run-http-config
@@ -20,22 +21,19 @@ spec:
         resources:
           limits:
             cpu: "1"
-            memory: 512Mi
+            memory: 768Mi
           requests:
             cpu: 100m
-            memory: 128Mi
+            memory: 256Mi
         startupProbe:
           tcpSocket:
             port: 30004
-          initialDelaySeconds: 15
         livenessProbe:
           tcpSocket:
             port: 30004
-          initialDelaySeconds: 15
         readinessProbe:
           tcpSocket:
             port: 30004
-          initialDelaySeconds: 15
         ports:
         - containerPort: 30004
           name: adsb-in

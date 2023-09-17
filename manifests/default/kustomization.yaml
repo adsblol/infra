@@ -21,4 +21,4 @@ images:
 - name: ghcr.io/adsblol/mlat-server-sync-map
   newTag: master-bc80dbc7-1679998737 # {"$imagepolicy": "adsblol:mlat-server-sync-map:tag"}
 - name: ghcr.io/katlol/readsb
-  newTag: 3ef880844dde1a18d5b053cb0775064083171f93
+  newTag: dev
